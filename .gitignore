@@ -1,3 +1,4 @@
 node_modules
 .wrangler
-index.html
+.dev.vars
+public

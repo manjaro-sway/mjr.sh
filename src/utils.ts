@@ -2,14 +2,7 @@ import { type Generated, Kysely } from "kysely";
 import { D1Dialect } from "kysely-d1";
 import z from "zod";
 
-export const paramsValidator = z.object({
-	key: z.string().min(3).max(6),
-});
-
-export type Env = {
-	urls: D1Database;
-	SALT: string;
-};
+export const keyValidator = z.string().min(3).max(6);
 
 type Table = {
 	key: string;

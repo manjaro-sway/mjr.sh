@@ -1,10 +1,18 @@
 name = "mjr-sh"
-pages_build_output_dir = "."
+main = "src/index.ts"
+compatibility_date = "2026-09-15"
+compatibility_flags = ["nodejs_compat"]
 
-[[ d1_databases ]]
+[assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "none"
+
+[observability]
+enabled = true
+
+[[d1_databases]]
 binding = "urls"
 database_name = "mjr-sh"
 database_id = "9fb678f6-8435-4627-9b0f-7a9a8b8a3165"
-
-[vars]
-API_KEY = "1234567asdf"
+migrations_dir = "migrations"

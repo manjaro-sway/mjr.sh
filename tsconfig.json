@@ -2,10 +2,11 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"compilerOptions": {
 		"target": "esnext",
-		"module": "NodeNext",
+		"module": "preserve",
 		"lib": ["esnext"],
-		"types": ["@cloudflare/workers-types"],
-		"moduleResolution": "NodeNext",
+		"types": ["./worker-configuration.d.ts"],
+		"moduleResolution": "bundler",
+		"noEmit": true,
 		"strict": true,
 		"isolatedModules": true,
 		"allowUnreachableCode": false,
@@ -20,5 +21,6 @@
 		"noUnusedParameters": true,
 		"noUnusedLocals": true,
 		"noErrorTruncation": true
-	}
+	},
+	"include": ["src/**/*.ts", "worker-configuration.d.ts"]
 }

@@ -1,6 +1,6 @@
 # mjr.sh
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/manjaro-contrib/mjr.sh)](https://mjr.sh/C736)
+[![GitHub Repo stars](https://img.shields.io/github/stars/manjaro-sway/mjr.sh)](https://mjr.sh/C736)
 [![Count Of Redirects](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fmjr.sh%2Fstats&query=%24.redirects&label=redirects)](https://mjr.sh/stats)
 [![Count Of Links](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fmjr.sh%2Fstats&query=%24.links&label=links)](https://mjr.sh/stats)
 
@@ -72,9 +72,32 @@ Which returns something like this
 }
 ```
 
+## Development
+
+This is a Cloudflare Worker (`src/index.ts`) with the rendered `README.md` served
+as a static asset from `public/`.
+
+```sh
+bun install
+cp .dev.vars.example .dev.vars            # SALT used to hash edit secrets
+bunx wrangler d1 execute urls --local --file=./schema.sql
+bunx wrangler d1 migrations apply urls --local
+bun run dev                               # builds public/ and starts wrangler dev
+```
+
+Other scripts: `bun run typecheck`, `bun run check` (biome), `bun run types`
+(regenerates `worker-configuration.d.ts`), `bun run deploy`.
+
+The `SALT` secret has to exist in production as well:
+
+```sh
+bunx wrangler secret put SALT
+bunx wrangler d1 migrations apply urls --remote
+```
+
 ## Notes
 
-- Links are deleted after 14 days, except if their domains are on the [allowList](https://github.com/manjaro-contrib/mjr.sh/blob/main/functions/allowList.ts) - PRs welcome!
+- Links are deleted after 14 days, except if their domains are on the [allowList](https://github.com/manjaro-sway/mjr.sh/blob/main/src/allowList.ts) - PRs welcome!
 - If you'd like to add a url to the exclusion list, open an issue.
 - If you'd like a little cli wrapper-script, check out [the one used in manjaro-sway](https://mjr.sh/11F8)
 - All of this makes use of the generous free tiers of cloudflare workers and [d1](https://developers.cloudflare.com/d1/platform/pricing/), so 100k links can be added per day and they can be read 5 Mio times per day and take up virtually no space. We should be good for a long time :tm:

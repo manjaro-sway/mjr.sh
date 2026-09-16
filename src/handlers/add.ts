@@ -1,11 +1,10 @@
 import { sql } from "kysely";
 import z from "zod";
-import allowList, { getCutoffDate } from "./allowList";
-import { type Env, createHash, getDB } from "./utils";
+import allowList, { getCutoffDate } from "../allowList";
+import { createHash, getDB } from "../utils";
 
 const queryValidator = z.object({
 	url: z
-		.string()
 		.url()
 		.refine(
 			(url) => new URL(url).protocol === "https:",
@@ -17,16 +16,15 @@ const queryValidator = z.object({
 		),
 });
 
-export const onRequest: PagesFunction<Env> = async (context) => {
-	console.log(context.request.headers);
-	const { searchParams } = new URL(context.request.url);
+export const add = async (request: Request, env: Env): Promise<Response> => {
+	const { searchParams } = new URL(request.url);
 	const input = queryValidator.safeParse(Object.fromEntries(searchParams));
 
-	if (input.error || !input.data?.url) {
+	if (!input.success) {
 		return Response.json(input.error, { status: 400 });
 	}
 
-	const db = getDB(context.env);
+	const db = getDB(env);
 
 	const shouldCleanup = Math.floor(Math.random() * 10) === 0;
 
@@ -46,7 +44,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
 	const { hash, plaintextSecret } = await createHash({
 		plaintextSecret: crypto.randomUUID(),
-		salt: context.env.SALT,
+		salt: env.SALT,
 	});
 	// int between 4 and 7
 	const keyLength = Math.floor(Math.random() * 4) + 4;
@@ -69,17 +67,17 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 			.returning(["key", "timestamp", "value"])
 			.executeTakeFirstOrThrow();
 
-		const url = new URL(context.request.url);
+		const url = new URL(request.url);
 		url.pathname = result.key;
 		url.search = "";
 
-		const editUrl = new URL(context.request.url);
+		const editUrl = new URL(request.url);
 		editUrl.pathname = `${result.key}/edit`;
 		editUrl.search = "";
 		editUrl.searchParams.set("secret", plaintextSecret);
 		editUrl.searchParams.set("url", "https://example.com");
 
-		const statsUrl = new URL(context.request.url);
+		const statsUrl = new URL(request.url);
 		statsUrl.pathname = `${result.key}/stats`;
 		statsUrl.search = "";
 
@@ -91,12 +89,12 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 			secret: plaintextSecret,
 		};
 
-		const accepts = context.request.headers.get("accept")?.split(",") ?? [];
+		const accepts = request.headers.get("accept")?.split(",") ?? [];
 		if (
 			accepts.includes("text/html") &&
 			!accepts.includes("application/json")
 		) {
-			const url = new URL(context.request.url);
+			const url = new URL(request.url);
 			url.pathname = "";
 			url.search = new URLSearchParams(values).toString();
 			return Response.redirect(url.toString(), 302);
