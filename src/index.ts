@@ -3,6 +3,7 @@ import { add } from "./handlers/add";
 import { edit } from "./handlers/edit";
 import { purge } from "./handlers/purge";
 import { redirect } from "./handlers/redirect";
+import { rescreen } from "./handlers/rescreen";
 import { globalStats, keyStats } from "./handlers/stats";
 import { keyValidator } from "./utils";
 
@@ -49,5 +50,14 @@ export default {
 
 		const entries = await refreshBlocklists(env);
 		console.info(`refreshed ${entries} blocklist entries`);
+
+		const flagged = await rescreen(env);
+		if (flagged.length > 0) {
+			console.warn(
+				`rescreen: ${flagged.length} stored links now blocklisted: ${flagged.join(", ")}`,
+			);
+		} else {
+			console.info("rescreen: no stored links are blocklisted");
+		}
 	},
 } satisfies ExportedHandler<Env>;
