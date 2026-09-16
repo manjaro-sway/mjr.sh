@@ -1,5 +1,6 @@
 import { add } from "./handlers/add";
 import { edit } from "./handlers/edit";
+import { purge } from "./handlers/purge";
 import { redirect } from "./handlers/redirect";
 import { globalStats, keyStats } from "./handlers/stats";
 import { keyValidator } from "./utils";
@@ -31,5 +32,9 @@ export default {
 			default:
 				return notFound();
 		}
+	},
+	async scheduled(_controller, env, _ctx) {
+		const deleted = await purge(env);
+		console.info(`purged ${deleted} expired links`);
 	},
 } satisfies ExportedHandler<Env>;

@@ -22,3 +22,6 @@ binding = "urls"
 database_name = "mjr-sh"
 database_id = "94e365cc-1ec2-4230-8cf3-c3182901c522"
 migrations_dir = "migrations"
+
+[triggers]
+crons = ["0 3 * * *"]
