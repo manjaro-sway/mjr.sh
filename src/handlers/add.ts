@@ -79,6 +79,10 @@ export const add = async (request: Request, env: Env): Promise<Response> => {
 
 		return Response.json(values);
 	} catch (error) {
-		return Response.json({ error: (error as Error).message }, { status: 400 });
+		console.warn(`failed to store link: ${(error as Error).message}`);
+		return Response.json(
+			{ error: "Could not create short link" },
+			{ status: 400 },
+		);
 	}
 };

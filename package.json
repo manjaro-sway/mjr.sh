@@ -18,7 +18,7 @@
 	],
 	"scripts": {
 		"build": "bun run build:assets && bunx markdown-to-html-cli --style ./assets/style.css --output public/index.html",
-		"build:assets": "rm -rf public && mkdir -p public/assets && cp assets/favicon.svg assets/style.css public/assets/",
+		"build:assets": "rm -rf public && mkdir -p public/assets && cp assets/favicon.svg assets/style.css public/assets/ && cp assets/_headers public/_headers",
 		"db:migrate": "bunx wrangler d1 migrations apply urls --remote",
 		"db:purge": "bunx wrangler d1 execute urls --remote --file=./schema.sql",
 		"dev": "bun run build && bunx wrangler dev",

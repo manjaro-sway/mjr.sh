@@ -27,7 +27,9 @@ export default {
 			return globalStats(request, env);
 
 		const key = keyValidator.safeParse(first);
-		if (!key.success) return Response.json(key.error, { status: 400 });
+		if (!key.success) {
+			return Response.json({ error: "Invalid key" }, { status: 400 });
+		}
 
 		switch (second) {
 			case undefined:
