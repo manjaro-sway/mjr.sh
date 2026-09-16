@@ -2,6 +2,7 @@ name = "mjr-sh"
 main = "src/index.ts"
 compatibility_date = "2026-09-15"
 compatibility_flags = ["nodejs_compat"]
+account_id = "ed740e1b87e525691b947ca317a3cb90"
 
 [assets]
 directory = "./public"
@@ -14,5 +15,5 @@ enabled = true
 [[d1_databases]]
 binding = "urls"
 database_name = "mjr-sh"
-database_id = "9fb678f6-8435-4627-9b0f-7a9a8b8a3165"
+database_id = "94e365cc-1ec2-4230-8cf3-c3182901c522"
 migrations_dir = "migrations"
