@@ -111,6 +111,11 @@ bunx wrangler secret put SAFE_BROWSING_API_KEY
 - No information is being stored on who created the links
 - Stats are cached for 60 seconds
 - If there's a reason to communicate on a direct channel (abuse), send an email to [info@mjr.sh](mailto:info@mjr.sh)
+- `/add` rejects submissions whose domain is on a KV-backed blocklist, refreshed
+  daily: [hagezi TIF mini](https://github.com/hagezi/dns-blocklists) (GPL-3.0,
+  known-malicious domains) and
+  [PeterDaveHello/url-shorteners](https://github.com/PeterDaveHello/url-shorteners)
+  (MIT, nested shorteners aren't accepted)
 
 <details>
   <summary>Script</summary>

@@ -27,5 +27,9 @@ database_name = "mjr-sh"
 database_id = "94e365cc-1ec2-4230-8cf3-c3182901c522"
 migrations_dir = "migrations"
 
+[[kv_namespaces]]
+binding = "BLOCKLIST"
+id = "1908d8a69733446ba04cae66f7747d0d"
+
 [triggers]
 crons = ["0 3 * * *"]

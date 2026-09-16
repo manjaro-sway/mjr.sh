@@ -1,5 +1,6 @@
 import { sql } from "kysely";
 import z from "zod";
+import { isBlocked } from "../blocklist";
 import { checkUrl } from "../safeBrowsing";
 import { createHash, getDB, registrableDomain, urlValidator } from "../utils";
 
@@ -13,6 +14,14 @@ export const add = async (request: Request, env: Env): Promise<Response> => {
 
 	if (!input.success) {
 		return Response.json(input.error, { status: 400 });
+	}
+
+	const hostname = new URL(input.data.url).hostname;
+	if (await isBlocked(hostname, env)) {
+		return Response.json(
+			{ error: "URL rejected: domain is blocklisted" },
+			{ status: 400 },
+		);
 	}
 
 	if (await checkUrl(input.data.url, env)) {
