@@ -1,3 +1,4 @@
+import { refreshBlocklists } from "./blocklist";
 import { add } from "./handlers/add";
 import { edit } from "./handlers/edit";
 import { purge } from "./handlers/purge";
@@ -43,5 +44,8 @@ export default {
 	async scheduled(_controller, env, _ctx) {
 		const deleted = await purge(env);
 		console.info(`purged ${deleted} expired links`);
+
+		const entries = await refreshBlocklists(env);
+		console.info(`refreshed ${entries} blocklist entries`);
 	},
 } satisfies ExportedHandler<Env>;
