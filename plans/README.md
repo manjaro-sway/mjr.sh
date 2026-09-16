@@ -19,8 +19,8 @@ row when done.
 | 006 | Extract registrable domains correctly instead of taking the last two labels | P2 | S | 003 | DONE |
 | 007 | Widen generated short keys so the keyspace cannot be swept | P2 | S | — | DONE |
 | 008 | Fix the landing-page DOM XSS and stop leaking internal errors | P2 | S | — | DONE |
-| 009 | Apply the blocklist and Safe Browsing checks to `/edit` | P1 | S | — | TODO |
-| 010 | Re-screen stored URLs against the blocklist on the daily cron | P2 | S | — | TODO |
+| 009 | Apply the blocklist and Safe Browsing checks to `/edit` | P1 | S | — | DONE |
+| 010 | Re-screen stored URLs against the blocklist on the daily cron | P2 | S | — | DONE |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
