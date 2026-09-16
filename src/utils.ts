@@ -1,8 +1,20 @@
 import { type Generated, Kysely } from "kysely";
 import { D1Dialect } from "kysely-d1";
+import { getDomain } from "tldts";
 import z from "zod";
 
 export const keyValidator = z.string().min(3).max(8);
+
+/**
+ * The registrable domain (eTLD+1) per the Public Suffix List. Taking the last
+ * two labels is wrong for multi-part suffixes: `evil.co.uk` would collapse to
+ * `co.uk`, putting every unrelated `.co.uk` host in one bucket.
+ *
+ * `allowPrivateDomains` makes each GitHub Pages site its own domain rather
+ * than lumping all of `*.github.io` together.
+ */
+export const registrableDomain = (hostname: string): string =>
+	getDomain(hostname, { allowPrivateDomains: true }) ?? hostname.toLowerCase();
 
 export const urlValidator = z
 	.url()

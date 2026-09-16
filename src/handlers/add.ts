@@ -1,7 +1,7 @@
 import { sql } from "kysely";
 import z from "zod";
 import { checkUrl } from "../safeBrowsing";
-import { createHash, getDB, urlValidator } from "../utils";
+import { createHash, getDB, registrableDomain, urlValidator } from "../utils";
 
 const queryValidator = z.object({
 	url: urlValidator,
@@ -30,12 +30,7 @@ export const add = async (request: Request, env: Env): Promise<Response> => {
 	});
 	// `substr(X, 0, n)` returns n-1 chars, so 7..9 yields keys of 6..8
 	const keyLength = Math.floor(Math.random() * 3) + 7;
-	const domain = new URL(input.data.url).hostname
-		.split(".")
-		.reverse()
-		.splice(0, 2)
-		.reverse()
-		.join(".");
+	const domain = registrableDomain(new URL(input.data.url).hostname);
 
 	try {
 		const result = await db
