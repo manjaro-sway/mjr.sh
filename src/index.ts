@@ -14,7 +14,14 @@ export default {
 		if (rest.length > 0) return notFound();
 
 		if (first === undefined) return notFound();
-		if (first === "add" && second === undefined) return add(request, env);
+		if (first === "add" && second === undefined) {
+			const clientIp = request.headers.get("CF-Connecting-IP") ?? "unknown";
+			const { success } = await env.ADD_LIMITER.limit({ key: clientIp });
+			if (!success) {
+				return Response.json({ error: "Too many requests" }, { status: 429 });
+			}
+			return add(request, env);
+		}
 		if (first === "stats" && second === undefined)
 			return globalStats(request, env);
 
