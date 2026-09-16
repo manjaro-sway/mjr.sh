@@ -11,14 +11,14 @@ row when done.
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 |------|-------|----------|--------|------------|--------|
-| 001 | Apply the same URL scheme validation to `/edit` as to `/add` | P1 | S | — | TODO |
-| 002 | Rate-limit `/add` with the native Workers rate-limiting binding | P1 | S | — | TODO |
-| 003 | Move the link purge out of `/add` into a scheduled Cron Trigger | P1 | S | — | TODO |
-| 004 | Reject malicious URLs at submission using Google Safe Browsing v5 | P1 | M | 001 | TODO |
-| 005 | Block known-bad and nested-shortener domains from a KV-backed blocklist | P2 | M | 003 | TODO |
-| 006 | Extract registrable domains correctly instead of taking the last two labels | P2 | S | 003 | TODO |
-| 007 | Widen generated short keys so the keyspace cannot be swept | P2 | S | — | TODO |
-| 008 | Fix the landing-page DOM XSS and stop leaking internal errors | P2 | S | — | TODO |
+| 001 | Apply the same URL scheme validation to `/edit` as to `/add` | P1 | S | — | DONE |
+| 002 | Rate-limit `/add` with the native Workers rate-limiting binding | P1 | S | — | DONE |
+| 003 | Move the link purge out of `/add` into a scheduled Cron Trigger | P1 | S | — | DONE |
+| 004 | Reject malicious URLs at submission using Google Safe Browsing v5 | P1 | M | 001 | DONE |
+| 005 | Block known-bad and nested-shortener domains from a KV-backed blocklist | P2 | M | 003 | DONE |
+| 006 | Extract registrable domains correctly instead of taking the last two labels | P2 | S | 003 | DONE |
+| 007 | Widen generated short keys so the keyspace cannot be swept | P2 | S | — | DONE |
+| 008 | Fix the landing-page DOM XSS and stop leaking internal errors | P2 | S | — | DONE |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
