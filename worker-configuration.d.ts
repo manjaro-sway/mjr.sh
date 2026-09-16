@@ -3,6 +3,7 @@
 // Runtime types generated with workerd@1.20260911.1 2026-09-15 nodejs_compat
 interface __BaseEnv_Env {
 	urls: D1Database;
+	ADD_LIMITER: RateLimit;
 	ASSETS: Fetcher;
 	SALT: string;
 	SAFE_BROWSING_API_KEY: string;
