@@ -177,9 +177,12 @@ import { getDomain } from "tldts";
  * The registrable domain (eTLD+1) per the Public Suffix List. Taking the last
  * two labels is wrong for multi-part suffixes: `evil.co.uk` would collapse to
  * `co.uk`, putting every unrelated `.co.uk` host in one bucket.
+ *
+ * `allowPrivateDomains` makes each GitHub Pages site its own domain rather
+ * than lumping all of `*.github.io` together.
  */
 export const registrableDomain = (hostname: string): string =>
-	getDomain(hostname) ?? hostname.toLowerCase();
+	getDomain(hostname, { allowPrivateDomains: true }) ?? hostname.toLowerCase();
 ```
 
 The fallback to the raw lowercased hostname matters: `getDomain` returns `null`
@@ -199,7 +202,7 @@ for (const h of ["evil.com.co.uk","evil.co.uk","phish.github.io","a.b.manjaro.or
 Expected output:
 
 ```
-evil.com.co.uk             -> evil.com.co.uk
+evil.com.co.uk             -> com.co.uk
 evil.co.uk                 -> evil.co.uk
 phish.github.io            -> phish.github.io
 a.b.manjaro.org            -> manjaro.org
@@ -207,9 +210,17 @@ github.com.attacker.net    -> attacker.net
 manjaro.org                -> manjaro.org
 ```
 
-Note `phish.github.io` → `phish.github.io`: `github.io` is itself a public
-suffix, so each Pages site is its own registrable domain. That is correct and is
-precisely the bug being fixed.
+Two of these are worth understanding, because they look surprising:
+
+- `evil.com.co.uk` → `com.co.uk` is **correct**. `co.uk` is the public suffix,
+  so the registrable domain is the suffix plus exactly one more label. What
+  matters is that it is no longer `co.uk`: today's code collapses both
+  `evil.com.co.uk` and `evil.co.uk` to the same `co.uk` bucket, and after this
+  change they are distinct (`com.co.uk` vs `evil.co.uk`).
+- `phish.github.io` → `phish.github.io` requires `allowPrivateDomains: true`.
+  Without it you get `github.io` and every GitHub Pages site shares one bucket,
+  which is the bug this plan exists to fix. If you see `github.io`, the option
+  is missing.
 
 If the output differs, STOP — the library is not behaving as this plan assumes.
 
