@@ -1,6 +1,7 @@
 import { sql } from "kysely";
 import z from "zod";
 import allowList, { getCutoffDate } from "../allowList";
+import { checkUrl } from "../safeBrowsing";
 import { createHash, getDB, urlValidator } from "../utils";
 
 const queryValidator = z.object({
@@ -13,6 +14,13 @@ export const add = async (request: Request, env: Env): Promise<Response> => {
 
 	if (!input.success) {
 		return Response.json(input.error, { status: 400 });
+	}
+
+	if (await checkUrl(input.data.url, env)) {
+		return Response.json(
+			{ error: "URL rejected by Safe Browsing" },
+			{ status: 400 },
+		);
 	}
 
 	const db = getDB(env);

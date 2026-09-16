@@ -95,6 +95,13 @@ bunx wrangler secret put SALT
 bunx wrangler d1 migrations apply urls --remote
 ```
 
+`SAFE_BROWSING_API_KEY` is optional; submissions are accepted unchecked when
+it is absent. If set, it enables a Google Safe Browsing check on `/add`:
+
+```sh
+bunx wrangler secret put SAFE_BROWSING_API_KEY
+```
+
 ## Notes
 
 - Links are deleted after 14 days, except if their domains are on the [allowList](https://github.com/manjaro-sway/mjr.sh/blob/main/src/allowList.ts) - PRs welcome!
