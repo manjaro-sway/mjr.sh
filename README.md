@@ -106,7 +106,7 @@ bunx wrangler secret put SAFE_BROWSING_API_KEY
 
 - Links are deleted after 14 days, except if their domains are on the [allowList](https://github.com/manjaro-sway/mjr.sh/blob/main/src/allowList.ts) - PRs welcome!
 - If you'd like to add a url to the exclusion list, open an issue.
-- If you'd like a little cli wrapper-script, check out [the one used in manjaro-sway](https://mjr.sh/11F8)
+- If you'd like a little cli wrapper-script, check out [the one used in manjaro-sway](https://mjr.sh/11F8) or [the one in ashlaros](https://github.com/ashlaros/ashlaros/blob/main/packages/ashlaros-settings/payload/usr/bin/mjr), which also takes a url on stdin so it chains off other commands
 - All of this makes use of the generous free tiers of cloudflare workers and [d1](https://developers.cloudflare.com/d1/platform/pricing/), so 100k links can be added per day and they can be read 5 Mio times per day and take up virtually no space. We should be good for a long time :tm:
 - No information is being stored on who created the links
 - Stats are cached for 60 seconds
