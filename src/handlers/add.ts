@@ -45,8 +45,8 @@ export const add = async (request: Request, env: Env): Promise<Response> => {
 		plaintextSecret: crypto.randomUUID(),
 		salt: env.SALT,
 	});
-	// int between 4 and 7
-	const keyLength = Math.floor(Math.random() * 4) + 4;
+	// `substr(X, 0, n)` returns n-1 chars, so 7..9 yields keys of 6..8
+	const keyLength = Math.floor(Math.random() * 3) + 7;
 	const domain = new URL(input.data.url).hostname
 		.split(".")
 		.reverse()
@@ -58,7 +58,7 @@ export const add = async (request: Request, env: Env): Promise<Response> => {
 		const result = await db
 			.insertInto("urls")
 			.values({
-				key: sql`substr(hex(randomblob(3)), 0, ${keyLength})`,
+				key: sql`substr(hex(randomblob(8)), 0, ${keyLength})`,
 				value: input.data.url,
 				secret: hash,
 				domain,

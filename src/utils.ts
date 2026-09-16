@@ -2,7 +2,7 @@ import { type Generated, Kysely } from "kysely";
 import { D1Dialect } from "kysely-d1";
 import z from "zod";
 
-export const keyValidator = z.string().min(3).max(6);
+export const keyValidator = z.string().min(3).max(8);
 
 export const urlValidator = z
 	.url()
