@@ -15,12 +15,14 @@ const allowList = [
 ];
 
 const cutOffDays = 14;
+/**
+ * SQLite's `current_timestamp` writes `YYYY-MM-DD HH:MM:SS`, so the cutoff has
+ * to use the same shape for the string comparison in the purge to be correct.
+ */
 export const getCutoffDate = () => {
-	const cutOff = new Date(
-		Date.now() - 1000 * 60 * 60 * 24 * cutOffDays,
-	).toISOString();
+	const cutOff = new Date(Date.now() - 1000 * 60 * 60 * 24 * cutOffDays);
 
-	return cutOff;
+	return cutOff.toISOString().replace("T", " ").slice(0, 19);
 };
 
 export default allowList;

@@ -1,6 +1,5 @@
 import { sql } from "kysely";
 import z from "zod";
-import allowList, { getCutoffDate } from "../allowList";
 import { checkUrl } from "../safeBrowsing";
 import { createHash, getDB, urlValidator } from "../utils";
 
@@ -24,22 +23,6 @@ export const add = async (request: Request, env: Env): Promise<Response> => {
 	}
 
 	const db = getDB(env);
-
-	const shouldCleanup = Math.floor(Math.random() * 10) === 0;
-
-	// cleanup non-manjaro links older than 14 days
-	if (shouldCleanup) {
-		await db
-			.deleteFrom("urls")
-			.where((eb) =>
-				eb("timestamp", "<", getCutoffDate()).and(
-					"domain",
-					"not in",
-					allowList,
-				),
-			)
-			.execute();
-	}
 
 	const { hash, plaintextSecret } = await createHash({
 		plaintextSecret: crypto.randomUUID(),
