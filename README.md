@@ -120,12 +120,29 @@ bunx wrangler secret put SAFE_BROWSING_API_KEY
     var searchParams = new URLSearchParams(document.location.search)
     var params = Object.fromEntries(searchParams);
 
+    function safeLink(label, value) {
+      var line = document.createElement('div')
+      line.appendChild(document.createTextNode(label + ': '))
+      if (/^https:\/\//.test(value || '')) {
+        var anchor = document.createElement('a')
+        anchor.href = value
+        anchor.textContent = value
+        line.appendChild(anchor)
+      } else if (value) {
+        line.appendChild(document.createTextNode(value))
+      }
+      return line
+    }
+
     if (params["url"]) {
       var pre = document.querySelector(".language-sh").cloneNode(true)
       var copied = pre.querySelector(".copied")
       copied.setAttribute('data-code', params["url"])
       var content = pre.querySelector("code").querySelector("span")
-      content.innerHTML = `url: <a href="${params["url"]}">${params["url"]}</a>\nedit: <a href="${params["edit"]}">${params["edit"]}</a>\nstats: <a href="${params["stats"]}">${params["stats"]}</a>`
+      content.textContent = ''
+      content.appendChild(safeLink('url', params["url"]))
+      content.appendChild(safeLink('edit', params["edit"]))
+      content.appendChild(safeLink('stats', params["stats"]))
       result.appendChild(pre);
     }
   </script>
