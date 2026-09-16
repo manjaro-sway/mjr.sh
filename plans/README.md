@@ -19,6 +19,8 @@ row when done.
 | 006 | Extract registrable domains correctly instead of taking the last two labels | P2 | S | 003 | DONE |
 | 007 | Widen generated short keys so the keyspace cannot be swept | P2 | S | — | DONE |
 | 008 | Fix the landing-page DOM XSS and stop leaking internal errors | P2 | S | — | DONE |
+| 009 | Apply the blocklist and Safe Browsing checks to `/edit` | P1 | S | — | TODO |
+| 010 | Re-screen stored URLs against the blocklist on the daily cron | P2 | S | — | TODO |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
@@ -82,12 +84,25 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
 
 Recorded so they are not mistaken for oversights:
 
-- **`/edit` has no reputation check.** Plan 001 closes the scheme hole there, but
-  a link can still be created clean and edited to a domain that Safe Browsing or
-  the blocklist would reject. Extending 004/005 to `/edit` is the natural
-  follow-up and would reuse `checkUrl`/`isBlocked` unchanged.
-- **Existing stored URLs are never re-screened.** Links created before the
-  blocklist existed are not audited against it.
-- **`SALT` is not set on the deployed Worker** as of this writing. Edit secrets
-  cannot validate until `wrangler secret put SALT` is run with the original
-  value from the former Pages project.
+- **Reputation is checked at write time, never at redirect time.** A stored URL
+  that turns malicious is caught by the daily re-screen (plan 010), not at the
+  moment someone clicks it. Checking at redirect would put a KV read and a
+  third-party API call in the hot path of every redirect.
+- **Rate limiting is per-colo, not global.** Cloudflare's rate-limiting binding
+  counts per edge location, so a burst spread across many colos is not stopped
+  by a single 5/60s limit. Verified: a 12-request burst from one client produced
+  `200 200 429 429 429 200 200 200 429 429 429 200`.
+- **Both reputation checks fail open.** During a Safe Browsing outage or with an
+  empty blocklist KV, submissions are accepted unchecked. This is a deliberate
+  availability tradeoff documented in plan 004.
+
+## Resolved since the first audit
+
+- **`SALT` was missing on the deployed Worker** after the Pages migration, which
+  silently broke edit-secret validation for every existing link. A fresh random
+  salt was set via `wrangler secret put SALT` and verified end to end (edit with
+  the correct secret returns 200, wrong secret returns 404). Consequence: the
+  131 links created before that point have edit secrets that can no longer
+  validate, because the original Pages salt was unrecoverable.
+- **`/edit` had no reputation check** — addressed by plan 009.
+- **Existing stored URLs were never re-screened** — addressed by plan 010.
