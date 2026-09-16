@@ -1,5 +1,7 @@
 import { sql } from "kysely";
 import z from "zod";
+import { isBlocked } from "../blocklist";
+import { checkUrl } from "../safeBrowsing";
 import { createHash, getDB, urlValidator } from "../utils";
 
 const queryValidator = z.object({
@@ -21,6 +23,21 @@ export const edit = async (
 	}
 
 	const { url: value, secret } = query.data;
+
+	const hostname = new URL(value).hostname;
+	if (await isBlocked(hostname, env)) {
+		return Response.json(
+			{ error: "URL rejected: domain is blocklisted" },
+			{ status: 400 },
+		);
+	}
+
+	if (await checkUrl(value, env)) {
+		return Response.json(
+			{ error: "URL rejected by Safe Browsing" },
+			{ status: 400 },
+		);
+	}
 
 	const { hash } = await createHash({
 		plaintextSecret: secret,
