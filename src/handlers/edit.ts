@@ -1,9 +1,9 @@
 import { sql } from "kysely";
 import z from "zod";
-import { createHash, getDB } from "../utils";
+import { createHash, getDB, urlValidator } from "../utils";
 
 const queryValidator = z.object({
-	url: z.url(),
+	url: urlValidator,
 	secret: z.uuid(),
 });
 

@@ -4,6 +4,17 @@ import z from "zod";
 
 export const keyValidator = z.string().min(3).max(6);
 
+export const urlValidator = z
+	.url()
+	.refine(
+		(url) => new URL(url).protocol === "https:",
+		"Only HTTPS URLs are allowed",
+	)
+	.refine(
+		(url) => new URL(url).hostname.length > 3,
+		"Length of hostname must be greater than 3",
+	);
+
 type Table = {
 	key: string;
 	value: string;

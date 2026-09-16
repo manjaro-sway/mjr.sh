@@ -1,19 +1,10 @@
 import { sql } from "kysely";
 import z from "zod";
 import allowList, { getCutoffDate } from "../allowList";
-import { createHash, getDB } from "../utils";
+import { createHash, getDB, urlValidator } from "../utils";
 
 const queryValidator = z.object({
-	url: z
-		.url()
-		.refine(
-			(url) => new URL(url).protocol === "https:",
-			"Only HTTPS URLs are allowed",
-		)
-		.refine(
-			(url) => new URL(url).hostname.length > 3,
-			"Length of hostname must be greater than 3",
-		),
+	url: urlValidator,
 });
 
 export const add = async (request: Request, env: Env): Promise<Response> => {
